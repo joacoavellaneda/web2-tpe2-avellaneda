@@ -37,7 +37,7 @@ class ProductApiController {
         if ($product)
             $this->view->response($product);
         else 
-            $this->view->response("La tarea con el id=$id no existe", 404);
+            $this->view->response("El producto con el id=$id no existe", 404);
     }
     public function deleteProduct($params = null) {
         $id = $params[':ID'];
@@ -47,25 +47,40 @@ class ProductApiController {
             $this->model->delete($id);
             $this->view->response($product);
         } else 
-            $this->view->response("La tarea con el id=$id no existe", 404);
+            $this->view->response("El producto con el id=$id no existe", 404);
     }
-    public function addTask($params = []) {
+    public function insertProduct() {
         // devuelve el objeto JSON enviado por POST     
          $body = $this->getData();
- 
-         // inserta la tarea
-         $titulo = $body->titulo;
-         $descripcion = $body->descripcion;
-         $product = $this->model->saveProduct($name, $price, $color, $size, $description, $category, $id_products);
+         if (empty($body->name) || empty($body->price) || empty($body->color) || empty($body->size)|| empty($body->description)|| empty($body->id_category)){
+         $this->view->response("Complete los datos", 400);
+         }else{
+        
+         $name = $body->name;
+         $price = $body->price;
+         $color = $body->color;
+         $description = $body->description;
+         $size = $body->size;
+         $category = $body->id_category;
+         
+
+        $id = $this->model->insert($name, $price, $color, $size, $description, $category);
+        $product = $this->model->get($id);
+        $this->view->response($product, 201);
+
+         }
+         
     }
  
 function updateProduct($params = null) {
 
         $id = $params[':ID'];
         $product = $this->getData();
-        $productById = $this->model->getData($id);
+        $productById = $this->model->get($id);
+       
+
         //$productsAndCategories = $this->model->getAll();
-        if (empty($product->name) || empty($product->price) || empty($product->color) || empty($product->size)|| empty($product->description)|| empty($product->id_category))//$name, $price, $color, $size, $description, $category,$id_products 
+        if (empty($product->name) || empty($product->price) || empty($product->color) || empty($product->size)|| empty($product->description)|| empty($product->id_category))
         {
             $this->view->response("Complete los datos", 400);
         }
@@ -78,16 +93,17 @@ function updateProduct($params = null) {
             $description = $product->description;
             $category = $product->id_category;
             
+            
             if($productById) {
-                $this->model->update($id, $brand, $newModel, $description, $category);
-                $updateProduct = $this->model->getData($id); //esto es para traerme de la db el producto actualizado
+                $this->model->update($name, $price, $color, $size, $description, $category, $id );
+                $updateProduct = $this->model->get($id); //esto es para traerme de la db el producto actualizado
                 $this->view->response("Producto id = $id actualizado con éxito", 200); // $productById si quiero verver el producto actualizado
                 $this->view->response($updateProduct, 200);
             }
             else {
-                $this->view->response("La tarea con el id=$id no existe", 404);
+                $this->view->response("El producto con el id=$id no existe", 404);
             }
-        }
+         }
         
     }
 
