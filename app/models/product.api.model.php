@@ -12,13 +12,35 @@ class ProductsModel{
         return $db;
     }
 
-   public function getAll() {
-        $query = $this->db->prepare("SELECT * FROM products");
-        $query->execute();
-        $products = $query->fetchAll(PDO::FETCH_OBJ); 
-        
-        return $products;
+
+
+
+   public function getAll($filterName, $criterio, $orden,$limit ,$offset) {
+    $request = "SELECT * FROM products";
+
+
+    if(isset($filterName)){ //SI TIENE UN VALOR DISTINTO A NULL
+        $request .= " WHERE name LIKE '%$filterName%'"; //CONCATENAR LAS CONSULTAS
     }
+   
+
+    if ((isset($criterio))&&(isset($orden))){
+        $request .= " ORDER BY $criterio $orden";            
+    }
+    
+    if(isset($limit)){
+        $request .= " LIMIT $limit OFFSET $offset";
+    }
+    
+     $query = $this->db->prepare($request);
+     $query->execute();
+     $products = $query->fetchAll(PDO::FETCH_OBJ); 
+        
+     return $products;
+    }
+
+
+
     public function get ($id_products) {
         $query = $this->db->prepare("SELECT * FROM products WHERE id_products =?;");
         $query->execute([$id_products]);
@@ -69,6 +91,16 @@ class ProductsModel{
         return $products;
     }
 
+    /*
+    public function obtenerproductosOrdenados($criterio, $orden){
+        $query = $this->db->prepare("SELECT p.*, c.category as categoria FROM products p JOIN categories c ON p.id_category = c.id_category
+        ORDER BY $criterio $orden");
+        
+
+
+    }
+*/
+    
 
   
 
