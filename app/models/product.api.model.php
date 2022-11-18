@@ -72,22 +72,7 @@ class ProductsModel{
 
 
     }
-    public function getByInfo($id_products){
-        $query = $this->db->prepare("SELECT p.*, c.category as categoria FROM products p JOIN categories c ON p.id_category = c.id_category WHERE p.id_products = ?");
-        $query->execute([$id_products]);
-        $products = $query->fetch(PDO::FETCH_OBJ);
-  
-        return $products;
-         
-    }
     
-    public function getByCategory($id_category){
-        $query = $this->db->prepare("SELECT p.* FROM products p JOIN categories c ON p.id_category = c.id_category WHERE p.id_category = ?");
-        $query->execute([$id_category]);
-        $products = $query->fetchAll(PDO::FETCH_OBJ);
-       
-        return $products;
-    }
 
     public function productOrden($criterio,$orden){
         $request = "SELECT * FROM products";

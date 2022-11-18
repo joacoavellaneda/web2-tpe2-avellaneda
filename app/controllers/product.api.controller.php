@@ -40,7 +40,7 @@ class ProductApiController {
             if(($orden ==  'asc')||($orden ==  'desc')){
                 $products = $this->model->productOrden($criterio, $orden);
                 $this->view->response($products, 200);
-                var_dump('hola');
+                
             }
             else{
                 $this->view->response(" ordenamiento no encontrado", 400);
